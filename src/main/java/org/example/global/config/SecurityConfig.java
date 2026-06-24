@@ -1,5 +1,6 @@
 package org.example.global.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.global.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,19 @@ public class SecurityConfig {
                         "/v3/api-docs/**", "/api-docs/**"
                 ).permitAll()
                 .anyRequest().authenticated()
+            )
+            // 인증/권한 오류 시 HTML 대신 JSON 반환
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, e) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"message\":\"인증이 필요합니다.\"}");
+                })
+                .accessDeniedHandler((request, response, e) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"message\":\"접근 권한이 없습니다.\"}");
+                })
             )
             // UsernamePasswordAuthenticationFilter 이전에 JWT 필터 실행
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
