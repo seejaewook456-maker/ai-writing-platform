@@ -1,5 +1,5 @@
 import { getToken } from '../utils/token';
-import { Novel, NovelCreateRequest } from '../types/novel';
+import type { Novel, NovelCreateRequest } from '../types/novel';
 
 interface ApiResponse<T = undefined> {
   message: string;

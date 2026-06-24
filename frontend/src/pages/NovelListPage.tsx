@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import type { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMyNovels, deleteNovel } from '../api/novelApi';
-import { Novel } from '../types/novel';
+import type { Novel } from '../types/novel';
 
 export default function NovelListPage() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function NovelListPage() {
     fetchNovels();
   }, []);
 
-  const handleDelete = async (e: React.MouseEvent, novelId: number) => {
+  const handleDelete = async (e: MouseEvent, novelId: number) => {
     // 카드 클릭 이벤트와 분리
     e.stopPropagation();
     if (!confirm('작품을 삭제하시겠습니까?')) return;

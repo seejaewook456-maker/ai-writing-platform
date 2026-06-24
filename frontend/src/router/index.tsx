@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+import type { ReactNode } from 'react';
 import { isLoggedIn } from '../utils/token';
 import MainLayout from '../layouts/MainLayout';
 import LoginPage from '../pages/LoginPage';
@@ -7,7 +8,7 @@ import NovelListPage from '../pages/NovelListPage';
 import NovelCreatePage from '../pages/NovelCreatePage';
 
 // 로그인 상태가 아니면 /login으로 리다이렉트하는 가드
-function PrivateRoute({ children }: { children: React.ReactNode }) {
+function PrivateRoute({ children }: { children: ReactNode }) {
   if (!isLoggedIn()) {
     return <Navigate to="/login" replace />;
   }

@@ -1,4 +1,4 @@
-import { LoginRequest, SignupRequest, LoginData } from '../types/auth';
+import type { LoginRequest, SignupRequest, LoginData } from '../types/auth';
 
 // 백엔드 공통 응답 구조
 interface ApiResponse<T = undefined> {
