@@ -1,6 +1,10 @@
 package org.example.domain.novel.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.domain.character.repository.CharacterRepository;
+import org.example.domain.episode.repository.EpisodeRepository;
+import org.example.domain.episodecharacter.repository.EpisodeCharacterRepository;
+import org.example.domain.episodesummary.repository.EpisodeSummaryRepository;
 import org.example.domain.novel.dto.NovelCreateRequestDto;
 import org.example.domain.novel.dto.NovelResponseDto;
 import org.example.domain.novel.dto.NovelUpdateRequestDto;
@@ -8,6 +12,7 @@ import org.example.domain.novel.entity.Novel;
 import org.example.domain.novel.repository.NovelRepository;
 import org.example.domain.user.entity.User;
 import org.example.domain.user.repository.UserRepository;
+import org.example.domain.worldsetting.repository.WorldSettingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,11 @@ import java.util.List;
 public class NovelService {
 
     private final NovelRepository novelRepository;
+    private final EpisodeCharacterRepository episodeCharacterRepository;
+    private final EpisodeSummaryRepository episodeSummaryRepository;
+    private final EpisodeRepository episodeRepository;
+    private final CharacterRepository characterRepository;
+    private final WorldSettingRepository worldSettingRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -66,6 +76,12 @@ public class NovelService {
         Novel novel = findNovelById(novelId);
         validateOwner(novel, user);
 
+        // FK 제약 순서에 맞춰 하위 엔티티를 먼저 삭제
+        episodeCharacterRepository.deleteAllByEpisode_Novel(novel); // EpisodeCharacter (episode_id, character_id FK)
+        episodeSummaryRepository.deleteAllByEpisode_Novel(novel);   // EpisodeSummary (episode_id FK)
+        episodeRepository.deleteAllByNovel(novel);                  // Episode (novel_id FK)
+        characterRepository.deleteAllByNovel(novel);                // Character (novel_id FK)
+        worldSettingRepository.deleteAllByNovel(novel);             // WorldSetting (novel_id FK)
         novelRepository.delete(novel);
     }
 

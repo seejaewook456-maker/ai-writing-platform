@@ -13,6 +13,7 @@ import EpisodeDetailPage from '../pages/EpisodeDetailPage';
 import CharacterPage from '../pages/CharacterPage';
 import WorldSettingPage from '../pages/WorldSettingPage';
 import CharacterReviewPage from '../pages/CharacterReviewPage';
+import WorldSettingReviewPage from '../pages/WorldSettingReviewPage';
 
 // 로그인 상태가 아니면 /login으로 리다이렉트하는 가드
 function PrivateRoute({ children }: { children: ReactNode }) {
@@ -46,6 +47,7 @@ export const router = createBrowserRouter([
       { path: '/novels/:novelId/episodes/new', element: <EpisodeCreatePage /> },
       { path: '/episodes/:episodeId', element: <EpisodeDetailPage /> },
       { path: '/episodes/:episodeId/character-review', element: <CharacterReviewPage /> },
+      { path: '/episodes/:episodeId/world-setting-review', element: <WorldSettingReviewPage /> },
       { path: '/novels/:novelId/characters', element: <CharacterPage /> },
       { path: '/novels/:novelId/world-settings', element: <WorldSettingPage /> },
     ],

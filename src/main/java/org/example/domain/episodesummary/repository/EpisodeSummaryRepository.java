@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface EpisodeSummaryRepository extends JpaRepository<EpisodeSummary, Long> {
 
     Optional<EpisodeSummary> findByEpisode(Episode episode);
+
+    // 작품 삭제 시 해당 작품의 모든 요약을 한 번에 삭제
+    void deleteAllByEpisode_Novel(org.example.domain.novel.entity.Novel novel);
 }

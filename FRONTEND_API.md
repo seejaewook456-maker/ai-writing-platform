@@ -522,6 +522,90 @@ Authorization: Bearer {accessToken}
 
 ---
 
+## AI 세계관 추출(WorldSettingExtraction) API — 프론트 연동
+
+### AI 세계관 후보 추출
+
+```
+POST /api/episodes/{episodeId}/world-setting-extraction
+Authorization: Bearer {accessToken}
+```
+
+**설명**: AI가 회차 본문을 분석하여 세계관/설정 후보를 반환합니다. DB에 저장하지 않으며, 반환된 후보를 프론트엔드에서 1개씩 검토 후 저장합니다.
+
+**Response (200)**
+```json
+{
+  "message": "세계관 추출 성공",
+  "data": {
+    "episodeTitle": "1화 - 시작",
+    "totalCount": 2,
+    "candidates": [
+      {
+        "category": "ITEM",
+        "title": "아카식의 서",
+        "content": "계승자만 펼칠 수 있는 금서",
+        "evidence": "아카식의 서는 계승자만 펼칠 수 있는 금서였다.",
+        "isExistingSetting": false,
+        "matchedWorldSettingId": null,
+        "existingWorldSetting": null,
+        "newInsights": null
+      },
+      {
+        "category": "MAGIC",
+        "title": "봉인 마법",
+        "content": "봉인 마법은 계약자 혈통만 사용 가능하며, 발동 시 손목에 낙인이 남는다.",
+        "evidence": "그의 손목에 붉은 낙인이 새겨졌다.",
+        "isExistingSetting": true,
+        "matchedWorldSettingId": 3,
+        "existingWorldSetting": {
+          "id": 3,
+          "novelId": 1,
+          "category": "MAGIC",
+          "title": "봉인 마법",
+          "content": "봉인 마법은 계약자 혈통만 사용 가능하다.",
+          "createdAt": "...",
+          "updatedAt": "..."
+        },
+        "newInsights": {
+          "content": ["발동 시 손목에 붉은 낙인이 남는다"]
+        }
+      }
+    ]
+  }
+}
+```
+
+**저장 방식** (DB 저장은 사용자 검토 후 기존 API로):
+- 신규 설정: `POST /api/novels/{novelId}/world-settings` with `{ category, title, content }`
+- 기존 설정 보강: `PATCH /api/world-settings/{matchedWorldSettingId}` with `{ category, title, content }`
+
+### 프론트 연동 흐름
+
+```
+EpisodeDetailPage
+→ [AI 세계관 추출] 버튼 클릭
+→ POST /api/episodes/{episodeId}/world-setting-extraction
+→ navigate('/episodes/{episodeId}/world-setting-review', { state: { candidates, novelId, episodeId, episodeTitle } })
+
+WorldSettingReviewPage (1/N ~ N/N)
+→ 신규(isExistingSetting=false): category/title/content 수정 → POST /api/novels/{novelId}/world-settings
+→ 기존(isExistingSetting=true): 기존 내용 + newInsights 표시 → PATCH /api/world-settings/{matchedWorldSettingId}
+→ 완료: 신규 저장 N건 / 기존 보강 N건 / 건너뜀 N건 통계 표시
+```
+
+### 관련 파일
+
+| 파일 | 역할 |
+|------|------|
+| `src/api/worldSettingExtractionApi.ts` | 추출 API 호출 |
+| `src/types/worldSettingExtraction.ts` | 추출 결과 타입 정의 |
+| `src/pages/WorldSettingReviewPage.tsx` | 검토 화면 |
+| `src/api/worldSettingApi.ts` | 저장/수정 (기존 파일 재사용) |
+| `src/types/worldsetting.ts` | WorldSettingCategory enum, CATEGORY_LABELS (기존 파일 재사용) |
+
+---
+
 ## AI 회차 요약(EpisodeSummary) API
 
 ### AI 회차 요약 생성/재생성

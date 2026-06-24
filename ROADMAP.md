@@ -14,6 +14,8 @@
 - [x] AI 등장인물 추출 UI (CharacterReviewPage — 단계별 검토, ProgressBar)
 - [x] 프론트엔드 디자인 시스템 구축 (Warm Brown 컬러, 공통 컴포넌트 7개)
 - [x] 회차별 등장인물 연결 (EpisodeCharacter N:M) — 회차 상세 페이지 인물 박스 표시
+- [x] 세계관 AI 추출 (WorldSettingExtraction — 후보 반환, 신규/기존 설정 구분, newInsights)
+- [x] 세계관 AI 추출 UI (WorldSettingReviewPage — 1개씩 검토/수정/저장, 신규/보강 구분, 완료 통계)
 
 ---
 
@@ -31,7 +33,8 @@
 - [x] OpenAI API 연동 (global/ai — gpt-4.1-mini, Responses API)
 - [x] 회차 요약 생성 (EpisodeSummary — upsert)
 - [x] 등장인물 AI 추출 (CharacterExtraction — 후보 반환, 신규/기존 인물 구분, newInsights)
-- [ ] 문체 분석 (반복 표현, 문장 길이, 시점 혼동, 대사 비율)
+- [x] 세계관 AI 추출 (WorldSettingExtraction — 후보 반환, 신규/기존 설정 구분, newInsights)
+- ~~[ ] 문체 분석~~ — **구현하지 않음** (작가의 창작 자유 영역 — 서비스 철학과 맞지 않음)
 - [ ] 설정 충돌 탐지 (모순 감지)
 
 ### Phase 3 — RAG 도입

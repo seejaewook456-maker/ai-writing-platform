@@ -171,11 +171,35 @@ AI가 작가의 "제2의 기억 장치" 역할을 해야 한다.
 * 새로고침 후에도 유지 (DB 기반)
 * CharacterReviewPage — 저장 후 episodeCharacterApi로 회차-인물 연결 자동 생성
 
+### Backend (삭제 안전성)
+* 소설/회차/등장인물 삭제 시 FK 제약 순서에 맞춰 하위 엔티티 cascade 삭제 처리
+  - NovelService: EpisodeCharacter → EpisodeSummary → Episode → Character → WorldSetting → Novel 순서로 삭제
+  - EpisodeService: EpisodeCharacter → EpisodeSummary → Episode 순서로 삭제
+  - CharacterService: EpisodeCharacter → Character 순서로 삭제
+* `CODING_CONVENTIONS.md` 작성 — FK 삭제 순서, /error permitAll, GlobalExceptionHandler, fetchWithAuth 동작 규칙 문서화
+
+### Frontend (세계관 AI 추출 UI)
+* 회차 상세 페이지 "AI 세계관 추출" 버튼 — 추출 후 WorldSettingReviewPage로 이동
+* WorldSettingReviewPage — 설정 후보 1개씩 검토/수정/저장 플로우
+  - 신규 설정: category select + title + content 수정 후 저장 → POST /api/novels/{novelId}/world-settings
+  - 기존 설정 보강: 기존 내용 + newInsights 강조 표시 → PATCH /api/world-settings/{id}
+  - 완료 화면: 신규 저장 / 기존 보강 / 건너뜀 통계 표시
+* Character Extraction UI와 동일한 UX 원칙 적용 (1개씩 검토, AI 결과 자동 저장 없음)
+
+### Backend (세계관 AI 추출)
+* WorldSetting Extraction — POST /api/episodes/{episodeId}/world-setting-extraction
+  - 회차 본문 + 작품 정보 + 기존 WorldSetting 목록을 AI에 전달
+  - 신규 설정(isExistingSetting=false) / 기존 설정 보강(isExistingSetting=true) 구분
+  - newInsights: 기존 content 대비 새롭게 발견된 정보 목록
+  - DB 저장 없음 — 사용자 검토 후 기존 WorldSetting CRUD API로 저장
+
 ## 아직 구현되지 않음
 
 ### AI 기능 (미구현)
 * 설정 충돌 탐지
-* 문체 분석
+
+### 구현하지 않기로 결정
+* 문체 분석 — 작가의 문체는 창작 자유 영역이므로 서비스가 평가/교정하는 방향 지양
 
 ---
 
