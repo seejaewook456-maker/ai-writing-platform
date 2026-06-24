@@ -127,13 +127,18 @@ AI가 작가의 "제2의 기억 장치" 역할을 해야 한다.
 * 인증 가드 (PrivateRoute)
 * CORS 설정 (CorsConfig — localhost:5173 허용)
 
+### Frontend (MVP 2차)
+* 작품 상세 페이지 (NovelDetailPage)
+* 회차 목록 페이지 (EpisodeListPage)
+* 회차 생성 페이지 (EpisodeCreatePage)
+* 회차 상세/수정/삭제 페이지 (EpisodeDetailPage)
+* 등장인물 관리 페이지 (CharacterPage — 인라인 CRUD)
+* 세계관 관리 페이지 (WorldSettingPage — 인라인 CRUD)
+* 라우터 확장 (8개 페이지 전체 연결)
+
 ## 아직 구현되지 않음
 
 ### Frontend
-* 작품 상세 페이지
-* 회차 목록 / 생성 / 수정 / 삭제
-* 등장인물 관리 페이지
-* 세계관 관리 페이지
 * 회차 요약 UI
 
 ### AI 기능

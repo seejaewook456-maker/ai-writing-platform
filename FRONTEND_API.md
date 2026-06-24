@@ -236,6 +236,216 @@ Authorization: Bearer {accessToken}
 
 ---
 
+## 회차(Episode) API
+
+> 모든 회차 API는 `Authorization: Bearer {accessToken}` 헤더가 필요합니다.
+
+### 회차 목록 조회
+
+```
+GET /api/episodes?novelId={novelId}
+```
+
+**Response (200)**
+```json
+{
+  "message": "회차 목록 조회 성공",
+  "data": [
+    { "id": 1, "novelId": 1, "title": "시작", "episodeNumber": 1, "content": "...", "createdAt": "...", "updatedAt": "..." }
+  ]
+}
+```
+
+---
+
+### 회차 생성
+
+```
+POST /api/episodes?novelId={novelId}
+```
+
+**Request**
+```json
+{ "title": "시작", "episodeNumber": 1, "content": "본문 내용" }
+```
+
+**Response (201)**: 생성된 회차 정보 반환
+
+---
+
+### 회차 상세 조회
+
+```
+GET /api/episodes/{episodeId}
+```
+
+**Response (200)**: 회차 상세 정보 반환
+
+---
+
+### 회차 수정 (전체 교체)
+
+```
+PATCH /api/episodes/{episodeId}
+```
+
+**Request**: `{ title, episodeNumber, content }` — 3개 필드 모두 필수
+
+**Response (200)**: 수정된 회차 정보 반환
+
+---
+
+### 회차 삭제
+
+```
+DELETE /api/episodes/{episodeId}
+```
+
+**Response (200)**: `{ "message": "회차 삭제 성공" }`
+
+---
+
+## 등장인물(Character) API
+
+> 모든 인물 API는 `Authorization: Bearer {accessToken}` 헤더가 필요합니다.
+
+### 인물 목록 조회
+
+```
+GET /api/characters?novelId={novelId}
+```
+
+**Response (200)**
+```json
+{
+  "message": "등장인물 목록 조회 성공",
+  "data": [
+    { "id": 1, "novelId": 1, "name": "홍길동", "role": "주인공", "age": "25세", "personality": "용감함", "speechStyle": "반말", "description": "설명", "createdAt": "...", "updatedAt": "..." }
+  ]
+}
+```
+
+---
+
+### 인물 생성
+
+```
+POST /api/characters?novelId={novelId}
+```
+
+**Request**
+```json
+{ "name": "홍길동", "role": "주인공", "age": "25세", "personality": "용감함", "speechStyle": "반말", "description": "설명" }
+```
+
+> `name`만 필수, 나머지는 선택
+
+**Response (201)**: 생성된 인물 정보 반환
+
+---
+
+### 인물 수정
+
+```
+PATCH /api/characters/{characterId}
+```
+
+**Request**: 생성 요청과 동일 구조
+
+**Response (200)**: 수정된 인물 정보 반환
+
+---
+
+### 인물 삭제
+
+```
+DELETE /api/characters/{characterId}
+```
+
+**Response (200)**: `{ "message": "등장인물 삭제 성공" }`
+
+---
+
+## 세계관(WorldSetting) API
+
+> 모든 세계관 API는 `Authorization: Bearer {accessToken}` 헤더가 필요합니다.
+
+### 카테고리 목록
+
+`COUNTRY(국가)`, `RACE(종족)`, `MAGIC(마법)`, `ORGANIZATION(조직)`, `PLACE(장소)`, `EVENT(사건)`, `ITEM(아이템)`, `RULE(규칙)`, `ETC(기타)`
+
+### 세계관 목록 조회
+
+```
+GET /api/world-settings?novelId={novelId}
+```
+
+**Response (200)**
+```json
+{
+  "message": "세계관 설정 목록 조회 성공",
+  "data": [
+    { "id": 1, "novelId": 1, "category": "MAGIC", "title": "마법 체계", "content": "설명", "createdAt": "...", "updatedAt": "..." }
+  ]
+}
+```
+
+---
+
+### 세계관 설정 생성
+
+```
+POST /api/world-settings?novelId={novelId}
+```
+
+**Request**
+```json
+{ "category": "MAGIC", "title": "마법 체계", "content": "설명 내용" }
+```
+
+**Response (201)**: 생성된 설정 정보 반환
+
+---
+
+### 세계관 설정 수정
+
+```
+PATCH /api/world-settings/{worldSettingId}
+```
+
+**Request**: 생성 요청과 동일 구조
+
+**Response (200)**: 수정된 설정 정보 반환
+
+---
+
+### 세계관 설정 삭제
+
+```
+DELETE /api/world-settings/{worldSettingId}
+```
+
+**Response (200)**: `{ "message": "세계관 설정 삭제 성공" }`
+
+---
+
+## 페이지 라우팅 구조
+
+| 경로 | 페이지 |
+|---|---|
+| `/login` | 로그인 |
+| `/signup` | 회원가입 |
+| `/novels` | 작품 목록 |
+| `/novels/new` | 작품 생성 |
+| `/novels/:novelId` | 작품 상세 |
+| `/novels/:novelId/episodes` | 회차 목록 |
+| `/novels/:novelId/episodes/new` | 회차 생성 |
+| `/episodes/:episodeId` | 회차 상세/수정/삭제 |
+| `/novels/:novelId/characters` | 등장인물 관리 (인라인 CRUD) |
+| `/novels/:novelId/world-settings` | 세계관 관리 (인라인 CRUD) |
+
+---
+
 ## 인증 가드 (PrivateRoute)
 
 로그인하지 않은 사용자가 `/novels` 등 보호된 페이지에 접근하면 `/login`으로 자동 리다이렉트됩니다.
