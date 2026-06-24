@@ -178,11 +178,20 @@ AI가 작가의 "제2의 기억 장치" 역할을 해야 한다.
   - CharacterService: EpisodeCharacter → Character 순서로 삭제
 * `CODING_CONVENTIONS.md` 작성 — FK 삭제 순서, /error permitAll, GlobalExceptionHandler, fetchWithAuth 동작 규칙 문서화
 
+### Backend (세계관 AI 추출)
+* WorldSetting Extraction — POST /api/episodes/{episodeId}/world-setting-extraction
+  - 회차 본문 + 작품 정보 + 기존 WorldSetting 목록을 AI에 전달
+  - 신규 설정(isExistingSetting=false) / 기존 설정 보강(isExistingSetting=true) 구분
+  - newInsights: 기존 content 대비 새롭게 발견된 정보 목록
+  - DB 저장 없음 — 사용자 검토 후 기존 WorldSetting CRUD API로 저장
+
 ## 아직 구현되지 않음
 
 ### AI 기능 (미구현)
 * 설정 충돌 탐지
-* 문체 분석
+
+### 구현하지 않기로 결정
+* 문체 분석 — 작가의 문체는 창작 자유 영역이므로 서비스가 평가/교정하는 방향 지양
 
 ---
 

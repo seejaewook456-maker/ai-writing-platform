@@ -522,6 +522,66 @@ Authorization: Bearer {accessToken}
 
 ---
 
+## AI 세계관 추출(WorldSettingExtraction) API
+
+### AI 세계관 후보 추출
+
+```
+POST /api/episodes/{episodeId}/world-setting-extraction
+Authorization: Bearer {accessToken}
+```
+
+**설명**: AI가 회차 본문을 분석하여 세계관/설정 후보를 반환합니다. DB에 저장하지 않으며, 반환된 후보를 프론트엔드에서 1개씩 검토 후 저장합니다.
+
+**Response (200)**
+```json
+{
+  "message": "세계관 추출 성공",
+  "data": {
+    "episodeTitle": "1화 - 시작",
+    "totalCount": 2,
+    "candidates": [
+      {
+        "category": "ITEM",
+        "title": "아카식의 서",
+        "content": "계승자만 펼칠 수 있는 금서",
+        "evidence": "아카식의 서는 계승자만 펼칠 수 있는 금서였다.",
+        "isExistingSetting": false,
+        "matchedWorldSettingId": null,
+        "existingWorldSetting": null,
+        "newInsights": null
+      },
+      {
+        "category": "MAGIC",
+        "title": "봉인 마법",
+        "content": "봉인 마법은 계약자 혈통만 사용 가능하며, 발동 시 손목에 낙인이 남는다.",
+        "evidence": "그의 손목에 붉은 낙인이 새겨졌다.",
+        "isExistingSetting": true,
+        "matchedWorldSettingId": 3,
+        "existingWorldSetting": {
+          "id": 3,
+          "novelId": 1,
+          "category": "MAGIC",
+          "title": "봉인 마법",
+          "content": "봉인 마법은 계약자 혈통만 사용 가능하다.",
+          "createdAt": "...",
+          "updatedAt": "..."
+        },
+        "newInsights": {
+          "content": ["발동 시 손목에 붉은 낙인이 남는다"]
+        }
+      }
+    ]
+  }
+}
+```
+
+**저장 방식** (DB 저장은 사용자 검토 후 기존 API로):
+- 신규 설정: `POST /api/novels/{novelId}/world-settings` with `{ category, title, content }`
+- 기존 설정 보강: `PATCH /api/world-settings/{matchedWorldSettingId}` with `{ category, title, content }`
+
+---
+
 ## AI 회차 요약(EpisodeSummary) API
 
 ### AI 회차 요약 생성/재생성
