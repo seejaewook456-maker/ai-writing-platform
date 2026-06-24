@@ -15,5 +15,8 @@ public interface EpisodeCharacterRepository extends JpaRepository<EpisodeCharact
 
     void deleteAllByEpisode(Episode episode);
 
+    // 작품 삭제 시 해당 작품의 모든 회차-인물 연결을 한 번에 삭제
+    void deleteAllByEpisode_Novel(org.example.domain.novel.entity.Novel novel);
+
     void deleteAllByCharacter(Character character);
 }

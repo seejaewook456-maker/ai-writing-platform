@@ -9,4 +9,6 @@ import java.util.List;
 public interface CharacterRepository extends JpaRepository<Character, Long> {
 
     List<Character> findAllByNovelOrderByNameAsc(Novel novel);
+
+    void deleteAllByNovel(Novel novel);
 }
