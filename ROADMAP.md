@@ -15,6 +15,7 @@
 - [x] 프론트엔드 디자인 시스템 구축 (Warm Brown 컬러, 공통 컴포넌트 7개)
 - [x] 회차별 등장인물 연결 (EpisodeCharacter N:M) — 회차 상세 페이지 인물 박스 표시
 - [x] 세계관 AI 추출 (WorldSettingExtraction — 후보 반환, 신규/기존 설정 구분, newInsights)
+- [x] 세계관 AI 추출 UI (WorldSettingReviewPage — 1개씩 검토/수정/저장, 신규/보강 구분, 완료 통계)
 
 ---
 

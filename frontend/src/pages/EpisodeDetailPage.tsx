@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getEpisode, updateEpisode, deleteEpisode } from '../api/episodeApi';
 import { getSummary, generateSummary } from '../api/episodeSummaryApi';
 import { extractCharacters } from '../api/characterExtractionApi';
+import { extractWorldSettings } from '../api/worldSettingExtractionApi';
 import { getEpisodeCharacters } from '../api/episodeCharacterApi';
 import type { Episode } from '../types/episode';
 import type { EpisodeSummary } from '../types/episodeSummary';
@@ -31,6 +32,9 @@ export default function EpisodeDetailPage() {
   const [extractionLoading, setExtractionLoading] = useState(false);
   const [extractionError, setExtractionError] = useState('');
   const [episodeCharacters, setEpisodeCharacters] = useState<Character[]>([]);
+
+  const [wsExtractionLoading, setWsExtractionLoading] = useState(false);
+  const [wsExtractionError, setWsExtractionError] = useState('');
 
   useEffect(() => {
     if (!episodeId) return;
@@ -74,6 +78,21 @@ export default function EpisodeDetailPage() {
     } catch (err) {
       setExtractionError(err instanceof Error ? err.message : '등장인물 추출 실패');
       setExtractionLoading(false);
+    }
+  };
+
+  const handleExtractWorldSettings = async () => {
+    if (!episode) return;
+    setWsExtractionLoading(true);
+    setWsExtractionError('');
+    try {
+      const result = await extractWorldSettings(episode.id);
+      navigate(`/episodes/${episode.id}/world-setting-review`, {
+        state: { candidates: result.candidates, novelId: episode.novelId, episodeId: episode.id, episodeTitle: result.episodeTitle },
+      });
+    } catch (err) {
+      setWsExtractionError(err instanceof Error ? err.message : '세계관 추출 실패');
+      setWsExtractionLoading(false);
     }
   };
 
@@ -237,6 +256,22 @@ export default function EpisodeDetailPage() {
                   AI가 이 회차의 등장인물을 분석합니다. 추출 후 1명씩 검토해 저장할 수 있습니다.
                 </p>
               )
+            )}
+          </div>
+
+          {/* 세계관 AI 추출 섹션 */}
+          <div className="ai-section">
+            <div className="ai-section-header">
+              <h3>AI 세계관 추출</h3>
+              <Button variant="primary" size="sm" onClick={handleExtractWorldSettings} disabled={wsExtractionLoading}>
+                {wsExtractionLoading ? '분석 중...' : 'AI 세계관 추출'}
+              </Button>
+            </div>
+            {wsExtractionError && <p className="error-message">{wsExtractionError}</p>}
+            {!wsExtractionLoading && (
+              <p className="summary-empty">
+                AI가 이 회차의 세계관/설정 정보를 분석합니다. 추출 후 1개씩 검토해 저장할 수 있습니다.
+              </p>
             )}
           </div>
         </div>

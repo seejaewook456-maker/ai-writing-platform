@@ -1049,3 +1049,38 @@ select {
   color: var(--color-text-secondary);
   margin-bottom: 32px;
 }
+
+/* WorldSetting Review 완료 화면 통계 */
+.ws-done-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 36px;
+}
+
+.ws-done-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ws-done-stat-num {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.ws-done-stat-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* WorldSetting Review 편집 영역 */
+.ws-edit-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}

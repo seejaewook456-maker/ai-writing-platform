@@ -522,7 +522,7 @@ Authorization: Bearer {accessToken}
 
 ---
 
-## AI 세계관 추출(WorldSettingExtraction) API
+## AI 세계관 추출(WorldSettingExtraction) API — 프론트 연동
 
 ### AI 세계관 후보 추출
 
@@ -579,6 +579,30 @@ Authorization: Bearer {accessToken}
 **저장 방식** (DB 저장은 사용자 검토 후 기존 API로):
 - 신규 설정: `POST /api/novels/{novelId}/world-settings` with `{ category, title, content }`
 - 기존 설정 보강: `PATCH /api/world-settings/{matchedWorldSettingId}` with `{ category, title, content }`
+
+### 프론트 연동 흐름
+
+```
+EpisodeDetailPage
+→ [AI 세계관 추출] 버튼 클릭
+→ POST /api/episodes/{episodeId}/world-setting-extraction
+→ navigate('/episodes/{episodeId}/world-setting-review', { state: { candidates, novelId, episodeId, episodeTitle } })
+
+WorldSettingReviewPage (1/N ~ N/N)
+→ 신규(isExistingSetting=false): category/title/content 수정 → POST /api/novels/{novelId}/world-settings
+→ 기존(isExistingSetting=true): 기존 내용 + newInsights 표시 → PATCH /api/world-settings/{matchedWorldSettingId}
+→ 완료: 신규 저장 N건 / 기존 보강 N건 / 건너뜀 N건 통계 표시
+```
+
+### 관련 파일
+
+| 파일 | 역할 |
+|------|------|
+| `src/api/worldSettingExtractionApi.ts` | 추출 API 호출 |
+| `src/types/worldSettingExtraction.ts` | 추출 결과 타입 정의 |
+| `src/pages/WorldSettingReviewPage.tsx` | 검토 화면 |
+| `src/api/worldSettingApi.ts` | 저장/수정 (기존 파일 재사용) |
+| `src/types/worldsetting.ts` | WorldSettingCategory enum, CATEGORY_LABELS (기존 파일 재사용) |
 
 ---
 
