@@ -38,6 +38,11 @@
 - [x] 설정 충돌 탐지 (ConflictDetection — 읽기 전용, HIGH/MEDIUM/LOW 심각도, 6개 충돌 유형)
 - [x] 설정 충돌 감지 UI (회차 상세 페이지 인라인 — 요약 바, severity 배지 카드, 재분석)
 
+### UX 개선
+
+- [x] 회차 본문 전체 복사 (EpisodeDetailPage — 📋 본문 복사 버튼, Toast 피드백, 모바일 대응)
+- [x] Novel/Episode 삭제 확인 절차 (ConfirmDeleteModal — "삭제하겠습니다" 입력 일치 시 삭제 활성화, 브라우저 confirm 제거)
+
 ### Phase 3 — RAG 도입
 
 - [ ] 벡터 DB 연동

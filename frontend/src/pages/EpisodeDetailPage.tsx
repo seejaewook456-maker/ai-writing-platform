@@ -18,6 +18,7 @@ import Button from '../components/Button';
 import BackLink from '../components/BackLink';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 
 export default function EpisodeDetailPage() {
   const { episodeId } = useParams<{ episodeId: string }>();
@@ -48,6 +49,15 @@ export default function EpisodeDetailPage() {
   const [conflictError, setConflictError] = useState('');
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
   const [lastAnalyzedAt, setLastAnalyzedAt] = useState<string | null>(null);
+
+  // 본문 복사 상태
+  const [copied, setCopied] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  // 삭제 확인 모달 상태
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     if (!episodeId) return;
@@ -154,14 +164,37 @@ export default function EpisodeDetailPage() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleCopyContent = async () => {
     if (!episode) return;
-    if (!window.confirm('이 회차를 삭제하시겠습니까?')) return;
+    try {
+      await navigator.clipboard.writeText(episode.content);
+      setCopied(true);
+      setToast({ message: '회차 본문이 복사되었습니다.', type: 'success' });
+      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setToast(null), 2000);
+    } catch {
+      setToast({ message: '본문 복사에 실패했습니다.', type: 'error' });
+      setTimeout(() => setToast(null), 2000);
+    }
+  };
+
+  // 삭제 버튼 클릭 → 모달만 열기 (API 호출 없음)
+  const handleDelete = () => {
+    setDeleteError('');
+    setShowDeleteModal(true);
+  };
+
+  // 모달에서 삭제 확정 → 기존 삭제 API 호출
+  const handleConfirmDelete = async () => {
+    if (!episode) return;
+    setDeleteLoading(true);
+    setDeleteError('');
     try {
       await deleteEpisode(episode.id);
       navigate(`/novels/${episode.novelId}/episodes`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '삭제 실패');
+      setDeleteError(err instanceof Error ? err.message : '삭제에 실패했습니다.');
+      setDeleteLoading(false);
     }
   };
 
@@ -243,6 +276,13 @@ export default function EpisodeDetailPage() {
                 삭제
               </Button>
             </div>
+          </div>
+
+          <div className="episode-content-header">
+            <span className="episode-content-label">회차 본문</span>
+            <Button variant="ghost" size="sm" onClick={handleCopyContent}>
+              {copied ? '✓ 복사됨' : '📋 본문 복사'}
+            </Button>
           </div>
 
           <div className="episode-content">{episode.content}</div>
@@ -364,6 +404,23 @@ export default function EpisodeDetailPage() {
               </p>
             )}
           </div>
+        </div>
+      )}
+
+      <ConfirmDeleteModal
+        isOpen={showDeleteModal}
+        title="회차를 삭제하시겠습니까?"
+        description="이 작업은 되돌릴 수 없습니다.
+회차를 삭제하면 해당 회차의 본문, 요약, AI 분석 결과가 함께 삭제될 수 있습니다."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowDeleteModal(false)}
+        isLoading={deleteLoading}
+        error={deleteError}
+      />
+
+      {toast && (
+        <div className={`toast toast-${toast.type}`}>
+          {toast.message}
         </div>
       )}
     </div>

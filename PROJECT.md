@@ -209,6 +209,16 @@ AI가 작가의 "제2의 기억 장치" 역할을 해야 한다.
   - 재분석: 버튼 재클릭으로 새 결과로 덮어씀
   - severity 색상: HIGH(Red) / MEDIUM(Amber) / LOW(Warm Brown)
 
+### UX 개선
+
+* Episode Content Copy — 회차 상세 페이지 본문 영역 오른쪽 상단 [📋 본문 복사] 버튼
+* Novel/Episode 삭제 확인 절차 — 삭제 버튼 클릭 시 ConfirmDeleteModal 표시, "삭제하겠습니다" 문구 입력 후 삭제 활성화 (실수 삭제 방지)
+  - navigator.clipboard.writeText 사용, 예외 처리 포함
+  - 복사 성공/실패 시 하단 고정 Toast(Snackbar) 표시 (2초 자동 소멸)
+  - 버튼 텍스트 2초간 "✓ 복사됨"으로 변경 후 원복
+  - 모바일 대응 (@media max-width: 480px Toast 좌우 여백 처리)
+  - 백엔드 수정 없음, 프론트엔드 전용
+
 ## 아직 구현되지 않음
 
 ### AI 기능 (미구현)
