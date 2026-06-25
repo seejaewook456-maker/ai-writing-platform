@@ -2,6 +2,7 @@ package org.example.domain.character.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.domain.character.dto.CharacterCreateRequestDto;
+import org.example.domain.character.dto.CharacterFavoriteRequestDto;
 import org.example.domain.character.dto.CharacterResponseDto;
 import org.example.domain.character.dto.CharacterUpdateRequestDto;
 import org.example.domain.character.entity.Character;
@@ -50,7 +51,7 @@ public class CharacterService {
         Novel novel = findNovelById(novelId);
         validateOwner(novel, user);
 
-        return characterRepository.findAllByNovelOrderByNameAsc(novel).stream()
+        return characterRepository.findAllByNovelOrderByIsFavoriteDescNameAsc(novel).stream()
                 .map(CharacterResponseDto::from)
                 .toList();
     }
@@ -73,6 +74,16 @@ public class CharacterService {
         character.update(dto.getName(), dto.getRole(), dto.getAge(),
                 dto.getPersonality(), dto.getSpeechStyle(), dto.getDescription());
 
+        return CharacterResponseDto.from(character);
+    }
+
+    @Transactional
+    public CharacterResponseDto toggleFavorite(String email, Long characterId, CharacterFavoriteRequestDto dto) {
+        User user = findUserByEmail(email);
+        Character character = findCharacterById(characterId);
+        validateOwner(character.getNovel(), user);
+
+        character.updateFavorite(dto.getIsFavorite());
         return CharacterResponseDto.from(character);
     }
 

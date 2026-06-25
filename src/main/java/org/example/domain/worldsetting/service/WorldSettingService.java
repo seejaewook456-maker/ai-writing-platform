@@ -7,6 +7,7 @@ import org.example.domain.novel.repository.NovelRepository;
 import org.example.domain.user.entity.User;
 import org.example.domain.user.repository.UserRepository;
 import org.example.domain.worldsetting.dto.WorldSettingCreateRequestDto;
+import org.example.domain.worldsetting.dto.WorldSettingFavoriteRequestDto;
 import org.example.domain.worldsetting.dto.WorldSettingResponseDto;
 import org.example.domain.worldsetting.dto.WorldSettingUpdateRequestDto;
 import org.example.domain.worldsetting.entity.WorldSetting;
@@ -47,7 +48,7 @@ public class WorldSettingService {
         Novel novel = findNovelById(novelId);
         validateOwner(novel, user);
 
-        return worldSettingRepository.findAllByNovelOrderByCategoryAscTitleAsc(novel).stream()
+        return worldSettingRepository.findAllByNovelOrderByCategoryAscIsFavoriteDescTitleAsc(novel).stream()
                 .map(WorldSettingResponseDto::from)
                 .toList();
     }
@@ -68,6 +69,16 @@ public class WorldSettingService {
         validateOwner(worldSetting.getNovel(), user);
 
         worldSetting.update(dto.getCategory(), dto.getTitle(), dto.getContent());
+        return WorldSettingResponseDto.from(worldSetting);
+    }
+
+    @Transactional
+    public WorldSettingResponseDto toggleFavorite(String email, Long worldSettingId, WorldSettingFavoriteRequestDto dto) {
+        User user = findUserByEmail(email);
+        WorldSetting worldSetting = findWorldSettingById(worldSettingId);
+        validateOwner(worldSetting.getNovel(), user);
+
+        worldSetting.updateFavorite(dto.getIsFavorite());
         return WorldSettingResponseDto.from(worldSetting);
     }
 
