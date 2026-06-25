@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface CharacterRepository extends JpaRepository<Character, Long> {
 
-    List<Character> findAllByNovelOrderByNameAsc(Novel novel);
+    // 즐겨찾기 우선(DESC), 이름 오름차순
+    List<Character> findAllByNovelOrderByIsFavoriteDescNameAsc(Novel novel);
 
     // 챗봇 통계 전용
     long countByNovel(Novel novel);

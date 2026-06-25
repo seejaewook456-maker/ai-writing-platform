@@ -14,17 +14,19 @@ public class WorldSettingResponseDto {
     private final WorldSettingCategory category;
     private final String title;
     private final String content;
+    private final Boolean isFavorite;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
     private WorldSettingResponseDto(Long id, Long novelId, WorldSettingCategory category,
-                                     String title, String content,
+                                     String title, String content, Boolean isFavorite,
                                      LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.novelId = novelId;
         this.category = category;
         this.title = title;
         this.content = content;
+        this.isFavorite = isFavorite;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -36,6 +38,7 @@ public class WorldSettingResponseDto {
                 worldSetting.getCategory(),
                 worldSetting.getTitle(),
                 worldSetting.getContent(),
+                worldSetting.getIsFavorite(),
                 worldSetting.getCreatedAt(),
                 worldSetting.getUpdatedAt()
         );

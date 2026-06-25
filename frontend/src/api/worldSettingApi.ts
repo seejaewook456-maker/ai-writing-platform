@@ -22,6 +22,14 @@ export const updateWorldSetting = async (worldSettingId: number, body: WorldSett
   return json.data!;
 };
 
+export const toggleWorldSettingFavorite = async (worldSettingId: number, isFavorite: boolean): Promise<WorldSetting> => {
+  const json = await fetchWithAuth<WorldSetting>(`/api/world-settings/${worldSettingId}/favorite`, {
+    method: 'PATCH',
+    body: JSON.stringify({ isFavorite }),
+  });
+  return json.data!;
+};
+
 export const deleteWorldSetting = async (worldSettingId: number): Promise<void> => {
   await fetchWithAuth(`/api/world-settings/${worldSettingId}`, { method: 'DELETE' });
 };

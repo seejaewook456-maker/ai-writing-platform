@@ -27,6 +27,7 @@ export interface WorldSetting {
   category: WorldSettingCategory;
   title: string;
   content: string;
+  isFavorite: boolean;
   createdAt: string;
   updatedAt: string;
 }

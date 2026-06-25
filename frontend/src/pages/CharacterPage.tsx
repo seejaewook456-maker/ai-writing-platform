@@ -1,12 +1,21 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCharacters, createCharacter, updateCharacter, deleteCharacter } from '../api/characterApi';
+import { getCharacters, createCharacter, updateCharacter, toggleCharacterFavorite, deleteCharacter } from '../api/characterApi';
 import type { Character, CharacterCreateRequest } from '../types/character';
 import Button from '../components/Button';
 import BackLink from '../components/BackLink';
 import PageHeader from '../components/PageHeader';
 import EmptyState from '../components/EmptyState';
 import LoadingSpinner from '../components/LoadingSpinner';
+import CollapsibleFormCard from '../components/CollapsibleFormCard';
+
+// isFavorite DESC → name ASC 정렬
+function sortCharacters(list: Character[]): Character[] {
+  return [...list].sort((a, b) => {
+    if (a.isFavorite !== b.isFavorite) return b.isFavorite ? 1 : -1;
+    return a.name.localeCompare(b.name);
+  });
+}
 
 export default function CharacterPage() {
   const { novelId } = useParams<{ novelId: string }>();
@@ -14,7 +23,9 @@ export default function CharacterPage() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [newName, setNewName] = useState('');
   const [newRole, setNewRole] = useState('');
   const [newAge, setNewAge] = useState('');
@@ -35,10 +46,20 @@ export default function CharacterPage() {
   useEffect(() => {
     if (!novelId) return;
     getCharacters(Number(novelId))
-      .then(setCharacters)
+      .then((data) => setCharacters(sortCharacters(data)))
       .catch((err) => setError(err instanceof Error ? err.message : '목록 조회 실패'))
       .finally(() => setLoading(false));
   }, [novelId]);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 2000);
+  };
+
+  const clearForm = () => {
+    setNewName(''); setNewRole(''); setNewAge('');
+    setNewPersonality(''); setNewSpeechStyle(''); setNewDescription('');
+  };
 
   const handleAdd = async (e: FormEvent) => {
     e.preventDefault();
@@ -53,13 +74,28 @@ export default function CharacterPage() {
         ...(newDescription && { description: newDescription }),
       };
       const created = await createCharacter(Number(novelId), body);
-      setCharacters((prev) => [...prev, created]);
-      setNewName(''); setNewRole(''); setNewAge('');
-      setNewPersonality(''); setNewSpeechStyle(''); setNewDescription('');
+      setCharacters((prev) => sortCharacters([...prev, created]));
+      clearForm();
+      setIsFormOpen(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : '인물 추가 실패');
     } finally {
       setAdding(false);
+    }
+  };
+
+  const handleCancel = () => {
+    clearForm();
+    setIsFormOpen(false);
+  };
+
+  const handleToggleFavorite = async (characterId: number, currentValue: boolean) => {
+    try {
+      const updated = await toggleCharacterFavorite(characterId, !currentValue);
+      setCharacters((prev) => sortCharacters(prev.map((c) => c.id === characterId ? updated : c)));
+      showToast(!currentValue ? '즐겨찾기에 추가되었습니다.' : '즐겨찾기가 해제되었습니다.', 'success');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : '즐겨찾기 변경에 실패했습니다.', 'error');
     }
   };
 
@@ -84,7 +120,7 @@ export default function CharacterPage() {
         ...(editSpeechStyle && { speechStyle: editSpeechStyle }),
         ...(editDescription && { description: editDescription }),
       });
-      setCharacters((prev) => prev.map((c) => (c.id === characterId ? updated : c)));
+      setCharacters((prev) => sortCharacters(prev.map((c) => c.id === characterId ? updated : c)));
       setEditingId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : '수정 실패');
@@ -110,8 +146,11 @@ export default function CharacterPage() {
       <BackLink label="← 작품으로" onClick={() => navigate(`/novels/${novelId}`)} />
       <PageHeader title="등장인물 관리" />
 
-      <div className="add-form-box">
-        <h3>새 인물 추가</h3>
+      <CollapsibleFormCard
+        label="새 인물 추가"
+        isOpen={isFormOpen}
+        onToggle={() => setIsFormOpen((v) => !v)}
+      >
         <form onSubmit={handleAdd}>
           <div className="form-row">
             <div className="form-group">
@@ -173,11 +212,16 @@ export default function CharacterPage() {
             />
           </div>
           {error && <p className="error-message">{error}</p>}
-          <Button type="submit" variant="primary" disabled={adding}>
-            {adding ? '추가 중...' : '인물 추가'}
-          </Button>
+          <div className="form-actions">
+            <Button type="submit" variant="primary" disabled={adding}>
+              {adding ? '추가 중...' : '인물 추가'}
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleCancel} disabled={adding}>
+              취소
+            </Button>
+          </div>
         </form>
-      </div>
+      </CollapsibleFormCard>
 
       {characters.length === 0 ? (
         <EmptyState message="등록된 인물이 없습니다." />
@@ -187,6 +231,14 @@ export default function CharacterPage() {
             <div className="item-card-header">
               <h3>{c.name}</h3>
               <div className="item-card-actions">
+                <button
+                  className={`favorite-btn${c.isFavorite ? ' favorited' : ''}`}
+                  onClick={() => handleToggleFavorite(c.id, c.isFavorite)}
+                  title={c.isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                  type="button"
+                >
+                  {c.isFavorite ? '★' : '☆'}
+                </button>
                 {editingId !== c.id && (
                   <>
                     <Button variant="secondary" size="sm" onClick={() => startEdit(c)}>수정</Button>
@@ -245,6 +297,8 @@ export default function CharacterPage() {
           </div>
         ))
       )}
+
+      {toast && <div className={`toast toast-${toast.type}`}>{toast.message}</div>}
     </div>
   );
 }

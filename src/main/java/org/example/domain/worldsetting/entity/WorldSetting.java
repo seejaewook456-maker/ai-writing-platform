@@ -32,17 +32,25 @@ public class WorldSetting extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isFavorite = false;
+
     @Builder
     private WorldSetting(Novel novel, WorldSettingCategory category, String title, String content) {
         this.novel = novel;
         this.category = category;
         this.title = title;
         this.content = content;
+        this.isFavorite = false;
     }
 
     public void update(WorldSettingCategory category, String title, String content) {
         this.category = category;
         this.title = title;
         this.content = content;
+    }
+
+    public void updateFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
 }

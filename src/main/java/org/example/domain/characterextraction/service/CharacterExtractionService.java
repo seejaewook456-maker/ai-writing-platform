@@ -52,7 +52,7 @@ public class CharacterExtractionService {
         validateOwner(novel, user);
 
         // 기존 등장인물 목록 — AI가 신규/기존 인물을 구분하는 데 사용
-        List<Character> existingCharacters = characterRepository.findAllByNovelOrderByNameAsc(novel);
+        List<Character> existingCharacters = characterRepository.findAllByNovelOrderByIsFavoriteDescNameAsc(novel);
 
         // OpenAI 호출 — DB 저장 없음
         String input = buildInput(episode, novel, existingCharacters);

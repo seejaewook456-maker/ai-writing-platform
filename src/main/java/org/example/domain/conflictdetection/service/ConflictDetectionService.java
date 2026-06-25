@@ -62,8 +62,8 @@ public class ConflictDetectionService {
         Novel novel = episode.getNovel();
         validateOwner(novel, user);
 
-        List<Character> characters = characterRepository.findAllByNovelOrderByNameAsc(novel);
-        List<WorldSetting> worldSettings = worldSettingRepository.findAllByNovelOrderByCategoryAscTitleAsc(novel);
+        List<Character> characters = characterRepository.findAllByNovelOrderByIsFavoriteDescNameAsc(novel);
+        List<WorldSetting> worldSettings = worldSettingRepository.findAllByNovelOrderByCategoryAscIsFavoriteDescTitleAsc(novel);
 
         List<EpisodeSummary> recentSummaries = episodeSummaryRepository
                 .findRecentSummariesByNovel(novel, PageRequest.of(0, 10))

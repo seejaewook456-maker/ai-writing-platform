@@ -22,6 +22,14 @@ export const updateCharacter = async (characterId: number, body: CharacterUpdate
   return json.data!;
 };
 
+export const toggleCharacterFavorite = async (characterId: number, isFavorite: boolean): Promise<Character> => {
+  const json = await fetchWithAuth<Character>(`/api/characters/${characterId}/favorite`, {
+    method: 'PATCH',
+    body: JSON.stringify({ isFavorite }),
+  });
+  return json.data!;
+};
+
 export const deleteCharacter = async (characterId: number): Promise<void> => {
   await fetchWithAuth(`/api/characters/${characterId}`, { method: 'DELETE' });
 };

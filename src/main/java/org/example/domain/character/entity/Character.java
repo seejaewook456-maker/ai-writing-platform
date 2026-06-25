@@ -40,6 +40,9 @@ public class Character extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isFavorite = false;
+
     @Builder
     private Character(Novel novel, String name, String role, Integer age,
                       String personality, String speechStyle, String description) {
@@ -50,6 +53,7 @@ public class Character extends BaseEntity {
         this.personality = personality;
         this.speechStyle = speechStyle;
         this.description = description;
+        this.isFavorite = false;
     }
 
     public void update(String name, String role, Integer age,
@@ -60,5 +64,9 @@ public class Character extends BaseEntity {
         this.personality = personality;
         this.speechStyle = speechStyle;
         this.description = description;
+    }
+
+    public void updateFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
 }
