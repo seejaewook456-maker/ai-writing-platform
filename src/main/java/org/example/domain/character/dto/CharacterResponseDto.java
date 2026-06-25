@@ -16,11 +16,13 @@ public class CharacterResponseDto {
     private final String personality;
     private final String speechStyle;
     private final String description;
+    private final Boolean isFavorite;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
     private CharacterResponseDto(Long id, Long novelId, String name, String role, Integer age,
                                   String personality, String speechStyle, String description,
+                                  Boolean isFavorite,
                                   LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.novelId = novelId;
@@ -30,6 +32,7 @@ public class CharacterResponseDto {
         this.personality = personality;
         this.speechStyle = speechStyle;
         this.description = description;
+        this.isFavorite = isFavorite;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -44,6 +47,7 @@ public class CharacterResponseDto {
                 character.getPersonality(),
                 character.getSpeechStyle(),
                 character.getDescription(),
+                character.getIsFavorite(),
                 character.getCreatedAt(),
                 character.getUpdatedAt()
         );

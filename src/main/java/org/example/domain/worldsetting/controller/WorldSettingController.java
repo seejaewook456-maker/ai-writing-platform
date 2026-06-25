@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.worldsetting.dto.WorldSettingCreateRequestDto;
+import org.example.domain.worldsetting.dto.WorldSettingFavoriteRequestDto;
 import org.example.domain.worldsetting.dto.WorldSettingResponseDto;
 import org.example.domain.worldsetting.dto.WorldSettingUpdateRequestDto;
 import org.example.domain.worldsetting.service.WorldSettingService;
@@ -62,6 +63,16 @@ public class WorldSettingController {
             @Valid @RequestBody WorldSettingUpdateRequestDto dto) {
         WorldSettingResponseDto response = worldSettingService.updateWorldSetting(userDetails.getUsername(), worldSettingId, dto);
         return ResponseEntity.ok(ApiResponse.of("세계관 설정 수정 성공", response));
+    }
+
+    @Operation(summary = "세계관 설정 즐겨찾기 설정", description = "세계관 설정의 즐겨찾기 상태를 변경합니다.")
+    @PatchMapping("/api/world-settings/{worldSettingId}/favorite")
+    public ResponseEntity<ApiResponse> toggleFavorite(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long worldSettingId,
+            @Valid @RequestBody WorldSettingFavoriteRequestDto dto) {
+        WorldSettingResponseDto response = worldSettingService.toggleFavorite(userDetails.getUsername(), worldSettingId, dto);
+        return ResponseEntity.ok(ApiResponse.of("즐겨찾기 상태 변경 성공", response));
     }
 
     @Operation(summary = "세계관 설정 삭제", description = "세계관 설정을 삭제합니다. 본인 작품의 설정만 삭제 가능합니다.")

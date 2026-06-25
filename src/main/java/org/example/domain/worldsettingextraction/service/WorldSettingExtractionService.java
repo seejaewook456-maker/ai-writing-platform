@@ -51,7 +51,7 @@ public class WorldSettingExtractionService {
         validateOwner(novel, user);
 
         // 기존 세계관 설정 목록 — AI가 신규/기존 설정을 구분하는 데 사용
-        List<WorldSetting> existingSettings = worldSettingRepository.findAllByNovelOrderByCategoryAscTitleAsc(novel);
+        List<WorldSetting> existingSettings = worldSettingRepository.findAllByNovelOrderByCategoryAscIsFavoriteDescTitleAsc(novel);
 
         // OpenAI 호출 — DB 저장 없음
         String input = buildInput(episode, novel, existingSettings);

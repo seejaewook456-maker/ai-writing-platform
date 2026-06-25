@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface WorldSettingRepository extends JpaRepository<WorldSetting, Long> {
 
-    // 목록 조회 — 카테고리 오름차순, 제목 오름차순
-    List<WorldSetting> findAllByNovelOrderByCategoryAscTitleAsc(Novel novel);
+    // 목록 조회 — 카테고리 오름차순, 즐겨찾기 우선(DESC), 제목 오름차순
+    List<WorldSetting> findAllByNovelOrderByCategoryAscIsFavoriteDescTitleAsc(Novel novel);
 
     // 카테고리 필터 — 향후 AI가 특정 카테고리 설정만 조회할 때 사용
     List<WorldSetting> findAllByNovelAndCategoryOrderByTitleAsc(Novel novel, WorldSettingCategory category);

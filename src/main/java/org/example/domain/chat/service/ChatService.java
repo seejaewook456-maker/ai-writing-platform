@@ -52,8 +52,8 @@ public class ChatService {
         Novel novel = findNovelById(novelId);
         validateOwner(novel, user);
 
-        List<Character> characters = characterRepository.findAllByNovelOrderByNameAsc(novel);
-        List<WorldSetting> worldSettings = worldSettingRepository.findAllByNovelOrderByCategoryAscTitleAsc(novel);
+        List<Character> characters = characterRepository.findAllByNovelOrderByIsFavoriteDescNameAsc(novel);
+        List<WorldSetting> worldSettings = worldSettingRepository.findAllByNovelOrderByCategoryAscIsFavoriteDescTitleAsc(novel);
         List<EpisodeSummary> summaries = episodeSummaryRepository.findAllSummariesByNovel(novel);
         long totalEpisodeCount = episodeRepository.countByNovel(novel);
 

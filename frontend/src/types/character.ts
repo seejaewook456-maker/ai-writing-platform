@@ -7,6 +7,7 @@ export interface Character {
   personality: string | null;
   speechStyle: string | null;
   description: string | null;
+  isFavorite: boolean;
   createdAt: string;
   updatedAt: string;
 }

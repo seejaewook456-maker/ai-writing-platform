@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.character.dto.CharacterCreateRequestDto;
+import org.example.domain.character.dto.CharacterFavoriteRequestDto;
 import org.example.domain.character.dto.CharacterResponseDto;
 import org.example.domain.character.dto.CharacterUpdateRequestDto;
 import org.example.domain.character.service.CharacterService;
@@ -62,6 +63,16 @@ public class CharacterController {
             @Valid @RequestBody CharacterUpdateRequestDto dto) {
         CharacterResponseDto response = characterService.updateCharacter(userDetails.getUsername(), characterId, dto);
         return ResponseEntity.ok(ApiResponse.of("등장인물 수정 성공", response));
+    }
+
+    @Operation(summary = "등장인물 즐겨찾기 설정", description = "등장인물의 즐겨찾기 상태를 변경합니다.")
+    @PatchMapping("/api/characters/{characterId}/favorite")
+    public ResponseEntity<ApiResponse> toggleFavorite(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long characterId,
+            @Valid @RequestBody CharacterFavoriteRequestDto dto) {
+        CharacterResponseDto response = characterService.toggleFavorite(userDetails.getUsername(), characterId, dto);
+        return ResponseEntity.ok(ApiResponse.of("즐겨찾기 상태 변경 성공", response));
     }
 
     @Operation(summary = "등장인물 삭제", description = "등장인물을 삭제합니다. 본인 작품의 등장인물만 삭제 가능합니다.")
