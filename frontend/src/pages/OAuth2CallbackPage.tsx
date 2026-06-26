@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { saveToken } from '../utils/token';
 
 export default function OAuth2CallbackPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const token = searchParams.get('token');
 
     if (token) {
       saveToken(token);
@@ -15,7 +15,7 @@ export default function OAuth2CallbackPage() {
     } else {
       navigate('/login', { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, searchParams]);
 
   return (
     <div className="auth-wrapper">
