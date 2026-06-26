@@ -71,7 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @SuppressWarnings("unchecked")
     private OAuth2User processKakaoUser(OAuth2User oAuth2User, String nameAttributeKey) {
-        String providerId = String.valueOf(oAuth2User.getAttribute("id"));
+        String providerId = String.valueOf((Object) oAuth2User.getAttribute("id"));
 
         // 카카오 응답에서 이메일 / 닉네임 파싱 (중첩 구조)
         Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
