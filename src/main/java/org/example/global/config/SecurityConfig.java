@@ -45,17 +45,21 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             )
-            // 인증/권한 오류 시 HTML 대신 JSON 반환
+            // 인증/권한 오류 시 HTML 대신 JSON 반환 (필터 레벨에서 처리 — GlobalExceptionHandler 도달 전)
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, e) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json;charset=UTF-8");
-                    response.getWriter().write("{\"message\":\"인증이 필요합니다.\"}");
+                    response.getWriter().write(
+                        "{\"success\":false,\"code\":\"UNAUTHORIZED\",\"message\":\"인증이 필요합니다.\",\"data\":null}"
+                    );
                 })
                 .accessDeniedHandler((request, response, e) -> {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.setContentType("application/json;charset=UTF-8");
-                    response.getWriter().write("{\"message\":\"접근 권한이 없습니다.\"}");
+                    response.getWriter().write(
+                        "{\"success\":false,\"code\":\"FORBIDDEN\",\"message\":\"접근 권한이 없습니다.\",\"data\":null}"
+                    );
                 })
             )
             // Google OAuth2 로그인 설정
