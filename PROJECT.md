@@ -102,6 +102,8 @@ AI가 작가의 "제2의 기억 장치" 역할을 해야 한다.
 
 * Docker
 * AWS EC2
+* 운영 도메인: 프론트 `https://novelnestia.com`, 백엔드 `https://api.novelnestia.com`
+* 운영 서버 실행 시 `.env`에 `SPRING_PROFILES_ACTIVE=prod` 필수 (미설정 시 기본 프로필 `local`로 기동되어 개발용 DB 설정을 사용하게 됨)
 
 ---
 

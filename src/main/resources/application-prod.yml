@@ -13,6 +13,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+# Nginx 리버스 프록시 뒤에서 X-Forwarded-* 헤더를 신뢰해 HTTPS/실제 host를 인식
+server:
+  forward-headers-strategy: framework
+
 springdoc:
   api-docs:
     enabled: false
@@ -21,8 +25,8 @@ springdoc:
 
 app:
   frontend:
-    base-url: ${FRONTEND_BASE_URL}
+    base-url: https://novelnestia.com
   backend:
-    base-url: ${BACKEND_BASE_URL}
+    base-url: https://api.novelnestia.com
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+    allowed-origins: https://novelnestia.com,https://www.novelnestia.com
